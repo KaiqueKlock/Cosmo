@@ -1,0 +1,36 @@
+{
+	"current_mood": "bored",
+	"previous_mood": "",
+	"cooldowns": {
+		"mood_change_seconds": 3
+	},
+	"moods": {
+		"bored": {
+			"default_animation": "idle_animation",
+			"intensity": 1
+		},
+		"curious": {
+			"default_animation": "listening_animation",
+			"intensity": 2
+		},
+		"amused": {
+			"default_animation": "happy_animation",
+			"intensity": 2
+		},
+		"suspicious": {
+			"default_animation": "smirking_animation",
+			"intensity": 3
+		},
+		"excited": {
+			"default_animation": "happy_animation",
+			"intensity": 4
+		}
+	},
+	"triggers": {
+		"music_request": "excited",
+		"story_request": "curious",
+		"challenge_request": "suspicious",
+		"player_returned": "amused"
+	},
+	"history": []
+}

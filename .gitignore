@@ -1,0 +1,14 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+.import/
+export_presets.cfg
+
+# Arquivos de tradução e binários específicos
+*.translation
+*.mono/
+data_*/
+
+# Logs e travas do sistema
+*.log
+*.lock

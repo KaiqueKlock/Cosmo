@@ -1,0 +1,56 @@
++++ JANELA DE CONTEXTO +++
+
+Atue como um Character Systems Designer de IA Sênior especialista em Godot 4.6 (GDScript). Estou desenvolvendo o "COSMO PROJECT", um AI Companion sarcástico e inteligente com uma interface facial 2D operando em Godot. Preciso continuar o desenvolvimento iniciando uma nova Sprint baseada neste Handoff Técnico v0.4 compacto (focado na arquitetura e assinaturas). Leia com atenção para implementarmos a próxima feature.
+
+---
+
+# 📄 COSMO PROJECT — DEV HANDOFF v0.4 (COMPACTO)
+
+## 🧠 1. Visão Geral e Arquitetura do Sistema
+O projeto opera em um ecossistema desacoplado e modular baseado em dados (JSON). O fluxo de execução segue a cadeia:
+Main.gd (UI/Orquestrador) ➔ CosmoBrain.gd (Pipeline de Dados/Parsing) ➔ MoodManager.gd (Estados Emocionais).
+
+### Estrutura da Cena Atual (control.tscn)
+* Control (Nó raiz com o script Main.gd anexado)
+  ├── VoicePlayer (AudioStreamPlayer - bips procedimentais sintéticos)
+  ├── BackgroundMusicPlayer (AudioStreamPlayer - músicas reais .wav carregadas dinamicamente)
+  ├── GameContainer (VBoxContainer)
+  │   ├── FaceContainer (CenterContainer) ➔ CosmoFace ➔ AnimatedSprite2D
+  │   ├── DialogueContainer (PanelContainer) ➔ DialogueLabel (Word Wrap e Typewriter dinâmico)
+  │   └── MusicPlayerPanel (PanelContainer invisível por padrão, animado via Tween)
+  │       └── HBoxContainer (Alinhamento centralizado com Separation)
+  │           ├── Play / Pause / Next (TextureButtons funcionais)
+  │           └── CurrentTrackLabel (Label em % para o nome real da faixa)
+  └── InputField (LineEdit para digitação com Unique Name %InputField)
+
+---
+
+## ⚙️ 2. Assinaturas e Mapeamento de Métodos (100% Funcionais)
+
+### 📌 Main.gd (Gerenciador de Loop e UI)
+* `_on_input_field_text_submitted(_text: String) -> void`: Bloqueia input, toca animação de pensamento (1.2s delay), chama o cérebro, roda o typewriter e chaveia visibilidade do `MusicPlayerPanel` dependendo do modo de jogo ativo.
+* `execute_cosmo_reaction(speech_text: String, anim_name: String) -> void`: Typewriter manual que calcula atrasos reais baseados na gramática (pausa maior em vírgulas e pontos finais) e dispara o áudio sintético.
+* `_setup_procedural_voice() -> void`: Gera uma onda senoidal em tempo de execução via `AudioStreamWAV` e modula o `pitch_scale` dinamicamente de acordo com o humor do Cosmo (ex: `excited = 1.4`, `suspicious = 0.85`).
+* `_play_track(index: int) -> void`: Carrega via `load()` os arquivos reais da pasta `res://cosmo/playlist/` e atualiza a label e o `BackgroundMusicPlayer`.
+* `_on_play_pressed()`, `_on_pause_pressed()`, `_on_next_pressed()`: Conectados via sinal para controlar o playback real de áudio.
+
+### 📌 CosmoBrain.gd (Pipeline e Interpretação)
+* `detect_intent(text: String) -> String`: Limpa pontuações coladas de strings (ex: "tchau!" vira "tchau") e varre a frase inteira usando **Pesquisa por Palavras-Chave/Tokens Combinatórios** para evitar falsos negativos. Intenções atuais: `provide_name`, `laughter`, `farewell`, `music`, `start_music_mode`, `exit_music_mode`, `story`, `challenge`, `personal`, `greeting` e `unknown`.
+* `process_player_input(player_text: String) -> Dictionary`: Roda a cadeia sequencial: Detecta Intenção ➔ Atualiza Memória ➔ Atualiza Humor ➔ Atualiza Confiança (Trust) ➔ Extrai Nome (se `provide_name`) ➔ Gera Resposta ➔ Salva Dados ➔ Retorna Texto e Animação Sugerida.
+* `extract_and_save_name(player_text: String) -> void`: Fatia a string por gatilhos (ex: "meu nome é"), limpa resíduos e capitaliza. Salva em `player_identity`.
+* `build_response(intent: String) -> String`: Puxa do JSON e roda filtro anti-repetição. Aplica comportamento dinâmico na intenção `personal`: se `trust_score >= 30`, substitui a fala rígida por linhas de alta cumplicidade.
+* `apply_context(line: String) -> String`: Resolve tags como `[player_name]`. Se `trust_score >= 25`, varre as falas normais e troca a palavra genérica "usuário" pelo nome real do jogador. Se `trust_score >= 35`, injeta o nome do jogador como prefixo nas conversas.
+* `save_memory() -> void`: Grava o dicionário em `user://memory.json`. O `trust_score` persiste perfeitamente entre as sessões do jogo (atualmente testado e salvo na faixa de 65+).
+
+---
+
+## 🎯 3. Objetivo da Nova Sprint: Gerador Procedimental de Histórias/Lore
+
+**Decisão de Design:** Para manter o jogo totalmente offline, multiplataforma, imune a erros de rede e 100% seguro contra exposição de chaves de API para publicação direta no itch.io, decidimos abolir respostas estáticas e construir um **Gerador Combinatório/Procedimental de Histórias e Lore** de alta variedade diretamente no `CosmoBrain.gd`.
+
+### Requisitos Técnicos da Nova Feature:
+1. **Alta Variedade:** Em vez de ler strings inteiras do JSON ao detectar a intenção `"story"`, o cérebro deve sortear componentes de blocos isolados (ex: *1 Estrutura de Introdução + 1 Contexto Tecnológico Absurdo + 1 Reviravolta de Bug + 1 Conclusão Sarcástica*).
+2. **Casamento com os Systems Existentes:** O gerador deve usar as tags dinâmicas do `apply_context` para injetar o nome do jogador de forma sarcástica no meio da história gerada.
+3. **Persistência de Variedade:** O sistema deve ter travas/filtros de histórico para evitar que pedaços de frases sorteados recentemente se repitam consecutivamente.
+
+Como você propõe estruturar os novos dicionários de blocos de lore de forma escalável e com grande variedade de combinações dentro da nossa arquitetura? Traga as funções e a expansão de código necessárias!

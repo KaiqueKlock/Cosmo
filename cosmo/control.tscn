@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://ljfve60sf7px"]
+
+[node name="Control" type="Control" unique_id=547156609]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

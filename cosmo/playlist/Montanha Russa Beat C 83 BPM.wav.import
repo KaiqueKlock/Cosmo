@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://caaanfkjcgxut"
+path="res://.godot/imported/Montanha Russa Beat C 83 BPM.wav-1f7d3fc4defdcd5e3a8a253259d83a9c.sample"
+
+[deps]
+
+source_file="res://cosmo/playlist/Montanha Russa Beat C 83 BPM.wav"
+dest_files=["res://.godot/imported/Montanha Russa Beat C 83 BPM.wav-1f7d3fc4defdcd5e3a8a253259d83a9c.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

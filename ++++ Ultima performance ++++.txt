@@ -1,0 +1,43 @@
+++++ Ultima performance ++++ 
+
+[Cérebro] Buscando falas para a intenção: greeting
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "Eai Cosmo"
+🎯 [Intenção Detectada]: GREETING
+🎭 [Humor]: bored ➔ bored
+🤝 [Confiança (Trust)]: 76.0 ➔ 77
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Ah, é você. E eu aqui achando que o sistema operacional tinha finalmente limpado o cache de spans."
+===================================
+
+Cosmo diz: Ah, é você. E eu aqui achando que o sistema operacional tinha finalmente limpado o cache de spans.
+[Cérebro] Buscando falas para a intenção: start_music_mode
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "Pode tocar um som"
+🎯 [Intenção Detectada]: START_MUSIC_MODE
+🎭 [Humor]: bored ➔ bored
+🤝 [Confiança (Trust)]: 77 ➔ 77
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Player de música online. Tente não colocar ruídos orgânicos irritantes."
+===================================
+
+Cosmo diz: Player de música online. Tente não colocar ruídos orgânicos irritantes.
+[Interface] Painel de música exibido.
+[Music Player] Tocando arquivo real: Montanha Russa Beat C 83 Bpm
+[Music Player] Tocando arquivo real: Em Busca Do Infinito 113bpm Gm
+[Music Player] Tocando arquivo real: Fashion!!! D 120 E 155 Bpm.mp 3
+[Cérebro] Buscando falas para a intenção: exit_music_mode
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "fechar player"
+🎯 [Intenção Detectada]: EXIT_MUSIC_MODE
+🎭 [Humor]: bored ➔ bored
+🤝 [Confiança (Trust)]: 77 ➔ 77
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Voltando ao terminal principal. O que você quer agora?"
+===================================
+
+Cosmo diz: Voltando ao terminal principal. O que você quer agora?
+[Interface] Painel de música ocultado.

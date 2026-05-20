@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://ctybw5wt4rfhg"]
+
+[ext_resource type="Script" uid="uid://c2stdwiby114t" path="res://cosmo/scripts/CosmoBrain.gd" id="1_t8ljb"]
+[ext_resource type="PackedScene" uid="uid://6b1dho623kpe" path="res://cosmo/scenes/CosmoFace.tscn" id="2_t8ljb"]
+[ext_resource type="Texture2D" uid="uid://lmo1tuuat6oq" path="res://cosmo/sprites/playbtn.png" id="3_j30i6"]
+[ext_resource type="Script" uid="uid://cnxwya8xksj5a" path="res://cosmo/scripts/Main.gd" id="3_wyyjl"]
+[ext_resource type="Texture2D" uid="uid://c6fsmx2c8p580" path="res://cosmo/sprites/pausebtn.png" id="4_ho0wa"]
+[ext_resource type="Texture2D" uid="uid://dckdjcwhgrtak" path="res://cosmo/sprites/nextbtn.png" id="5_vvhe8"]
+
+[node name="Control" type="Control" unique_id=999585265]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 13.0
+offset_top = 3.0
+offset_right = 13.0
+offset_bottom = 3.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_wyyjl")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1761033990]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_right = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0014301271, 0, 0.20849913, 1)
+
+[node name="GameContainer" type="VBoxContainer" parent="." unique_id=367217412]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -16.0
+offset_top = -126.0
+offset_right = -11.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FaceContainer" type="CenterContainer" parent="GameContainer" unique_id=345416188]
+custom_minimum_size = Vector2(250, 250)
+layout_mode = 2
+size_flags_vertical = 7
+
+[node name="CosmoFace" parent="GameContainer/FaceContainer" unique_id=634051551 instance=ExtResource("2_t8ljb")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="AnimatedSprite2D" parent="GameContainer/FaceContainer/CosmoFace/Face" parent_id_path=PackedInt32Array(634051551, 1467849212) index="0" unique_id=1341144042]
+position = Vector2(34.999992, 83)
+scale = Vector2(7.03125, 5.0234375)
+autoplay = "idle_animation"
+
+[node name="DialogueContainer" type="PanelContainer" parent="GameContainer" unique_id=1098340171]
+custom_minimum_size = Vector2(400, 30)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DialogueLabel" type="Label" parent="GameContainer/DialogueContainer" unique_id=1106660596]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 2
+text = "
+"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="MusicPlayerPanel" type="PanelContainer" parent="GameContainer" unique_id=1304277667]
+custom_minimum_size = Vector2(400, 50)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GameContainer/MusicPlayerPanel" unique_id=2032495501]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="CurrentTrackLabel" type="Label" parent="GameContainer/MusicPlayerPanel/HBoxContainer" unique_id=1639981181]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text_overrun_behavior = 5
+
+[node name="Play" type="Button" parent="GameContainer/MusicPlayerPanel/HBoxContainer" unique_id=1598760738]
+layout_mode = 2
+icon = ExtResource("3_j30i6")
+
+[node name="Pause" type="Button" parent="GameContainer/MusicPlayerPanel/HBoxContainer" unique_id=822319643]
+layout_mode = 2
+icon = ExtResource("4_ho0wa")
+
+[node name="Next" type="Button" parent="GameContainer/MusicPlayerPanel/HBoxContainer" unique_id=1443193370]
+layout_mode = 2
+icon = ExtResource("5_vvhe8")
+
+[node name="CosmoBrain" type="Node" parent="." unique_id=643776502]
+unique_name_in_owner = true
+script = ExtResource("1_t8ljb")
+
+[node name="InputField" type="LineEdit" parent="." unique_id=1356100080]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 347.0
+offset_top = 436.0
+offset_right = 790.0
+offset_bottom = 485.0
+
+[node name="VoicePlayer" type="AudioStreamPlayer" parent="." unique_id=682374916]
+unique_name_in_owner = true
+
+[node name="BackgroundMusicPlayer" type="AudioStreamPlayer" parent="." unique_id=184823791]
+
+[connection signal="text_submitted" from="InputField" to="." method="_on_input_field_text_submitted"]
+
+[editable path="GameContainer/FaceContainer/CosmoFace"]

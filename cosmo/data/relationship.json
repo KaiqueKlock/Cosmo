@@ -1,0 +1,46 @@
+{
+  "version": "0.1",
+
+  "affinity": 0,
+
+  "current_level": "cold",
+
+  "levels": {
+	"cold": {
+	  "min": 0,
+	  "max": 24
+	},
+
+	"neutral": {
+	  "min": 25,
+	  "max": 49
+	},
+
+	"friendly": {
+	  "min": 50,
+	  "max": 74
+	},
+
+	"attached": {
+	  "min": 75,
+	  "max": 100
+	}
+  },
+
+  "affinity_rules": {
+	"player_returned": 5,
+	"story_request": 3,
+	"personal_question": 4,
+	"challenge_request": 2,
+	"long_absence": -3
+  },
+
+  "milestones": {
+	"first_name_usage": false,
+	"nickname_unlocked": false,
+	"first_secret_shared": false,
+	"trust_phrase_unlocked": false
+  },
+
+  "history": []
+}

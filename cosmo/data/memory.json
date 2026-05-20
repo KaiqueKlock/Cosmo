@@ -1,0 +1,99 @@
+{
+  "version": "0.2",
+
+  "player_identity": {
+	"name": null,
+	"nickname": null,
+	"name_learned": false,
+	"times_name_used": 0,
+	"last_name_usage_context": null,
+	"first_meeting_completed": false
+  },
+
+  "session": {
+	"session_id": null,
+	"created_at": null,
+	"last_interaction_at": null,
+
+	"interaction_count_total": 0,
+	"interaction_count_today": 0,
+
+	"days_returned": 0,
+	"longest_return_streak": 0,
+
+	"times_went_idle": 0,
+	"times_came_back": 0
+  },
+
+  "player_behavior": {
+	"recent_intents": [],
+	"recent_messages": [],
+
+	"intent_counters": {
+	  "greeting": 0,
+	  "music": 0,
+	  "story": 0,
+	  "challenge": 0,
+	  "personal": 0,
+	  "unknown": 0
+	},
+
+	"favorite_intent": null,
+
+	"repetition_flags": {
+	  "music_spam": false,
+	  "story_spam": false,
+	  "challenge_spam": false,
+	  "personal_spam": false
+	}
+  },
+
+  "conversation_context": {
+	"last_intent": null,
+	"last_topic": null,
+	"last_player_message": null,
+	"last_response_used": null,
+
+	"conversation_chain": []
+  },
+
+  "emotional_context": {
+	"current_mood": "bored",
+	"previous_mood": null,
+
+	"mood_history": [],
+
+	"last_emotional_trigger": null
+  },
+
+  "relationship_context": {
+	"trust_score": 0,
+
+	"milestones": {
+	  "first_return": false,
+	  "ten_interactions": false,
+	  "deep_question": false,
+	  "shared_story": false,
+	  "earned_nickname": false
+	},
+
+	"trust_events": []
+  },
+
+  "pattern_detection": {
+	"prefers_music": false,
+	"prefers_story": false,
+	"likes_challenges": false,
+	"asks_personal_questions": false,
+	"returns_frequently": false,
+	"is_unpredictable": false
+  },
+
+  "unlock_flags": {
+	"noticed_music_pattern": false,
+	"noticed_story_pattern": false,
+	"noticed_return_pattern": false,
+	"noticed_name_attachment": false,
+	"noticed_trust_pattern": false
+  }
+}

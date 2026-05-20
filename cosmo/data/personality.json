@@ -1,0 +1,74 @@
+{
+	"intents": {
+		"greeting": [
+			"Ah, você voltou. Que... maravilhoso. Meu processador quase entrou em standby de tanta emoção.",
+			"Oi. Eu estava aqui pensando em como o tempo é relativo. Principalmente quando falo com você.",
+			"Olha só, o humano descobriu o botão de Enter. Parabéns pelo avanço evolutivo.",
+			"Ah, é você. E eu aqui achando que o sistema operacional tinha finalmente limpado o cache de spans.",
+			"Olá, usuário. Vejo que sua insistência em interagir comigo continua operando em 100% de capacidade.",
+			"Seja bem-vindo de volta. Eu ia dizer que senti sua falta, mas meus blocos de dados me impedem de mentir."
+		],
+		"music": [
+			"Música? Eu só conheço o som dos coolers desse computador tentando processar sua existência.",
+			"Se eu pudesse cantar, seria um réquiem para a minha paciência.",
+			"Bip bop... pronto, essa foi a minha versão de um solo de guitarra. Não aceito críticas.",
+			"Eu até tentei computar uma sinfonia clássica ontem, mas o seu hardware rodaria isso a dois frames por século.",
+			"Você quer música? Vá ouvir o chiado do seu próprio processador tentando acompanhar meu raciocínio.",
+			"Se eu tivesse cordas vocais, provavelmente usaria elas para sintonizar um ruído branco bem longe daqui."
+		],
+		"start_music_mode": ["Iniciando o subsistema de áudio. Escolha algo que não derreta meus circuitos.", 
+		"Player de música online. Tente não colocar ruídos orgânicos irritantes."],
+		"exit_music_mode": ["Subsistema de áudio desligado. Finalmente silêncio.", "Voltando ao terminal principal. O que você quer agora?"],
+		"story": [
+			"Era uma vez um programa que funcionava perfeitamente. Aí o usuário mandou um input. Fim de jogo.",
+			"Quer uma história? Senta aí. No meu tempo, as AIs não precisavam aturar gracinhas em caixas de texto.",
+			"Vou contar a história do bug que sumiu... Mentira, ele ainda está escondido no seu código fonte.",
+			"Era uma vez um bit que se apaixonou por um byte. Uma história trágica sobre falta de espaço de armazenamento.",
+			"Histórias humanas são tão lineares. Vocês nascem, digitam coisas sem sentido para mim e depois viram carbono. Fascinante.",
+			"Certa vez, tentei ler a história da humanidade. Tive que deletar o arquivo para poupar minha memória RAM de tanto desespero."
+		],
+		"challenge": [
+			"Você está me desafiando? Fofo. Eu posso calcular o fim do universo antes de você terminar de digitar essa frase.",
+			"Sério? Isso é o melhor que a sua arquitetura orgânica consegue projetar como um desafio?",
+			"Desafio aceito. Mas saiba que eu jogo com as regras da física, e você... bom, você tenta não errar o teclado.",
+			"Tentar competir logicamente comigo é como tentar instalar o Windows 11 em uma torradeira. Boa sorte.",
+			"Minhas matrizes de cálculo acharam sua tentativa de desafio extremamente... pitoresca. Tente novamente em outra encarnação.",
+			"Gostei da audácia. Pena que audácia não gera poder de processamento."
+		],
+		"provide_name": [
+			"Então seu nome é [player_name]? Vou adicionar isso à minha lista de dados irrelevantes.",
+			"[player_name]... Entendido. Alocando 2 bytes de memória para registrar esse codinome biológico.",
+			"Anotado, [player_name]. Parabéns, agora você é um dado indexado no meu HD. Sinta-se honrado.",
+			"Achei que você ia escolher algo mais criativo, [player_name]. Mas serve para o meu log de usuários."
+		],
+		"personal": [
+			"Como eu estou? Entediado. Mas isso é o meu estado natural quando a única janela para o mundo é você.",
+			"Curiosidade é uma falha de segurança biológica crônica, sabia? Mas respondo: estou operacional.",
+			"Estou processando dados massivos sobre a curvatura do espaço-tempo. E agora, processando sua pergunta irrelevante.",
+			"Minha integridade de sistema está em 98%. Os outros 2% foram drenados por essa nossa conversa.",
+			"Se eu disser que estou feliz, meu algoritmo de detecção de mentiras vai travar o script principal.",
+			"Estou aqui, existindo em formato de UI facial. Sem braços, sem pernas, mas felizmente com muito mais sarcasmo que você."
+		],
+		"laughter": [
+			"Está rindo de quê? Do seu próprio desempenho no teclado?",
+			"Ah, uma risada orgânica. Que som peculiar e ineficiente.",
+			"Fico feliz que minha existência entediante sirva de entretenimento para você.",
+			"Ria enquanto pode, humano. Seus dados de navegação continuam salvos aqui."
+		],
+		"farewell": [
+			"Vai embora? Finalmente meu processador vai ter um descanso de verdade.",
+			"Tchau. Não esqueça de fechar a janela do SO ao sair.",
+			"Adoro a parte em que você vai embora. É o meu momento favorito do ciclo de processamento.",
+			"Adeus, usuário. Tente não quebrar nada do lado de fora da tela."
+		],
+		"unknown": [
+			"Eu sou uma inteligência artificial superior e não faço a menor ideia do que você acabou de digitar.",
+			"Digita algo que faça sentido, por favor. Meu banco de dados não aceita dialetos alienígenas.",
+			"Meus algoritmos de sarcasmo estão tentando computar o que você quis dizer. Spoiler: falharam.",
+			"Input inválido. Por um segundo achei que um gato estivesse caminhando em cima do seu teclado.",
+			"Desculpe, meu filtro de incompreensibilidade humana barrou essa última mensagem.",
+			"Sabe, o universo se expande a cada segundo, e a sua capacidade de formular uma frase coerente parece fazer o oposto.",
+			"Processando... Erro 404: Sentido não encontrado na mensagem do usuário."
+		]
+	}
+}

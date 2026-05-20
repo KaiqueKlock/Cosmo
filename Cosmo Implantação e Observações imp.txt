@@ -1,0 +1,96 @@
+Cosmo Implantação e Observações importantes : 
+
+
+Sistemas e Integrações:
+1. Memory system -> Ok
+2. Mood transitions -> ok
+3. Relationship system -> Ok
+4. Animation syncing ->
+5. Lore unlocks ->
+
+Fluxo Ideal : 
+
+Player fala algo
+↓
+Intent detector identifica categoria
+↓
+Cosmo consulta personality.json
+↓
+Consulta memory.json
+↓
+Consulta relationship.json
+↓
+Consulta mood_system.json
+↓
+Escolhe resposta final + animação
+
+Estrutura Definida
+res://cosmo/
+ ├── data/
+ │    ├── personality.json - -> Ok
+ │    ├── memory.json	-> Ok
+ │    ├── mood_system.json -> Ok
+ │    └── relationship.json -k Ok
+ │
+ ├── scripts/
+ │    ├── CosmoBrain.gd -> Ok
+ │    ├── MemoryManager.gd -> Ok 
+ │    ├── MoodManager.gd -> Ok
+ │    ├── RelationshipManager.gd -> Ok
+ │    └── IntentDetector.gd -> Ok
+      └── Main.gd -> Ok
+ │
+ └── sprites/
+ │    ├── cosmo_happy.png
+ │    ├── cosmo_conversation.png
+ │    ├── cosmo_listening.png
+ │    └── cosmo_smirking.png
+ │    └── cosmo_thinking.png
+ │    └── cosmo_Idle.png
+
+
+Cosmo Brain Faz: 
+
+detect_intent()
+↓
+story
+↓
+update_memory()
+↓
+story +1
+↓
+update_mood()
+↓
+bored → curious
+↓
+update_relationship()
+↓
+affinity +3
+↓
+build_response()
+↓
+seleciona fala do personality.json
+↓
+AnimationPlayer reage
+
+
+PipeLine de atuação 
+Player pergunta
+↓
+Cosmo entra em THINKING
+↓
+1 segundo
+↓
+Cosmo responde
+↓
+SAYING
+↓
+Volta para mood atual
+↓
+IDLE ou SMIRKING ou HAPPY
+
+
+Funcionalidades a implementar 
+
+Adicionar o sistema de pausas dramáticas por caractere no typewriter (ex: pausar o texto quando encontrar . ou ,)
+Gostaria de expandir a memória para que ele lembre do último tópico falado e responda de forma contextualizada no próximo turno
