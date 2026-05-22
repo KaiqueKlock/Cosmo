@@ -180,8 +180,7 @@ func process_player_input(player_text: String) -> Dictionary:
 	print("📖 [Fala Escolhida]: ", '"' + response + '"')
 	print("===================================\n")
 
-	# 4. Retorno visual padrão do seu sistema
-	
+		# 4. Retorno visual padrão do seu sistema (REPARADO)
 	var suggested_animation = "talking_animation"
 	
 	if intent == "challenge" or intent == "laughter":
@@ -191,10 +190,13 @@ func process_player_input(player_text: String) -> Dictionary:
 	elif intent == "story" or intent == "farewell" or intent == "exit_music_mode":
 		suggested_animation = "listening_animation"
 
+	# INJETADO: Agora o dicionário passa a intenção correta de volta para a interface!
 	return {
 		"text": response,
-		"animation": suggested_animation
+		"animation": suggested_animation,
+		"intent": intent
 	}
+
 
 
 # =====================================================
@@ -226,50 +228,44 @@ func detect_intent(text: String) -> String:
 	var words = clean_text.split(" ", false)
 
 	# -----------------------------------------------------------------
-	# ABORDAGEM POR TOKENS / PALAVRAS-CHAVE LAPIDADA
-	# -----------------------------------------------------------------
-
-	# -----------------------------------------------------------------
-	# REGRAS DO MODO MUSIC PLAYER
+	# REGRAS DO MODO MUSIC PLAYER (REPARADO E BLINDADO)
 	# -----------------------------------------------------------------
 	var music_tokens = ["música", "musica", "musicas", "music", "som", "tocar", "cantar", "ruido", "ruído", "player"]
-	var exit_music_tokens = ["sair", "voltar", "fechar", "parar", "stop", "exit"]
+	var exit_music_tokens = ["sair", "voltar", "fechar", "parar", "stop", "exit", "desligar", "ocultar"]
 	
 	# Inicializa a chave de modo na memória caso não exista no carregamento
-	if not memory_data.get("conversation_context", {}).has("current_game_mode"):
+	if not memory_data.has("conversation_context"):
+		memory_data["conversation_context"] = {}
+	if not memory_data["conversation_context"].has("current_game_mode"):
 		memory_data["conversation_context"]["current_game_mode"] = "normal"
 	
 	var current_mode = memory_data["conversation_context"]["current_game_mode"]
 	
-	# Se o jogador já estiver no modo música e digitar um token de saída:
-	if current_mode == "music":
-		for token in exit_music_tokens:
-			if token in words:
+	# REPARADO: Se o jogador usar um token explícito de saída, fecha o player de música
+	for token in exit_music_tokens:
+		if token in words:
+			# Evita falsos positivos se a frase contiver "não fechar" etc.
+			if current_mode == "music" or "player" in words or "musica" in words or "música" in words:
 				memory_data["conversation_context"]["current_game_mode"] = "normal"
 				return "exit_music_mode"
 				
-	# Se estiver no modo normal e pedir música, ativa a transição
+	# REPARADO: Se pedir música, retorna a intenção IMEDIATAMENTE, forçando a abertura do painel,
+	# mesmo que a memória local esteja dessincronizada ou presa em um estado antigo de uma sessão anterior.
 	for token in music_tokens:
 		if token in words:
-			if current_mode != "music":
-				memory_data["conversation_context"]["current_game_mode"] = "music"
-				return "start_music_mode"
+			memory_data["conversation_context"]["current_game_mode"] = "music"
+			return "start_music_mode"
 				
 	# -----------------------------------------------------------------
-	# REGRAS DO MODO Histórias
+	# REGRAS DO MODO HISTÓRIAS (OTIMIZADO)
 	# -----------------------------------------------------------------
 
-		# -----------------------------------------------------------------
-	# DETECÇÃO DE INTENÇÕES (DENTRO DE DETECT_INTENT)
-	# -----------------------------------------------------------------
-		# STORY_CONTINUE: Detecção direta de sequência narrativa
-	var continue_tokens = ["depois", "continua", "o que aconteceu", "entao", "então", "e depois"]
-	for token in continue_tokens:
-		if token in words: 
-			return "story" # Redireciona direto para gerar outra lore combinatória
 
-			
-	# STORY: Pedidos de histórias
+	# STORY_CONTINUE: Detecção de sequência narrativa estrita (Sem saudações misturadas)
+	if "depois" in lower_text or "continua" in lower_text or "o que aconteceu" in lower_text or "conte mais" in lower_text:
+		return "story"
+
+	# STORY: Pedidos de histórias normais
 	var story_tokens = ["história", "historia", "story", "conto", "contar", "conte"]
 	for token in story_tokens:
 		if token in words: 

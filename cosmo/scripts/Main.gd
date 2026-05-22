@@ -57,6 +57,39 @@ func _ready() -> void:
 	play_button.pressed.connect(_on_play_pressed)
 	pause_button.pressed.connect(_on_pause_pressed)
 	next_button.pressed.connect(_on_next_pressed)
+	
+	# 🔥 INJETADO: Inicializa o motor de fala nativo do S.O.
+	_initialize_cosmo_tts()
+
+
+# Variável global para armazenar o ID da voz do Cosmo
+var _cosmo_voice_id: String = ""
+
+func _initialize_cosmo_tts() -> void:
+	
+	var available_voices: PackedStringArray = DisplayServer.tts_get_voices_for_language("pt")
+	
+	print("\n=== 🎙️ VOZES DETECTADAS NO SISTEMA ===")
+	for i in range(available_voices.size()):
+		print("Índice [", i, "]: ", available_voices[i])
+	print("======================================\n")
+	
+	# Fallback: Se não encontrar vozes explícitas em português, tenta buscar as globais
+	if available_voices.is_empty():
+		# tts_get_voices() retorna um Array[Dictionary]. Aqui sim precisaríamos extrair.
+		# Mas para blindar contra falhas e manter o padrão simples do PackedStringArray:
+		var global_voices = DisplayServer.tts_get_voices()
+		if not global_voices.is_empty():
+			# Pega o ID de dicionário se vier do método global corporativo
+			_cosmo_voice_id = global_voices[0].get("id", "")
+	else:
+		# CORREÇÃO: Como 'available_voices' é um PackedStringArray, pegamos o índice diretamente!
+		_cosmo_voice_id = available_voices[0]
+		
+	if not _cosmo_voice_id.is_empty():
+		print("[TTS] Sistema sincronizado! ID da voz ativa: ", _cosmo_voice_id)
+	else:
+		print("[TTS Alerta] O Cosmo está mudo. Nenhuma voz de síntese nativa foi identificada no S.O.")
 
 
 # =====================================================
@@ -78,37 +111,52 @@ func _on_input_field_text_submitted(_text: String) -> void:
 	await get_tree().create_timer(1.2).timeout
 	
 	var cosmo_output: Dictionary = cosmo_brain.process_player_input(clean_text)
-	var intent = cosmo_output.get("intent", "") # Certifique-se de retornar intent se necessário, ou use a lógica abaixo
+	var intent: String = cosmo_output.get("intent", "unknown")
 	
-	# Executa a fala typewriter do Cosmo
+	# Executa a fala typewriter e o TTS real do Cosmo de forma assíncrona
 	await execute_cosmo_reaction(cosmo_output.get("text", "..."), cosmo_output.get("animation", "talking_animation"))
 	
-	# Intercepta as novas intenções de troca de modo de tela
-	if "start_music_mode" in cosmo_output.get("text") or cosmo_brain.memory_data["conversation_context"]["current_game_mode"] == "music":
-		# Se a intenção processada foi entrar na música, exibe o painel
-		if music_player_panel.visible == false:
-			_toggle_music_panel(true)
-			_play_track(current_track_index) # Autoplay ao entrar
-	
-	if "exit_music_mode" in cosmo_output.get("text") or cosmo_brain.memory_data["conversation_context"]["current_game_mode"] == "normal":
-		# Se o jogador pediu para sair do modo de música, esconde o painel
-		if music_player_panel.visible == true:
-			_toggle_music_panel(false)
-			is_playing_music = false
-	
-	_reset_to_current_mood_animation()
+	# -----------------------------------------------------------------
+	# CONTROLE RIGOROSO DE INTERFACE BASEADO NO TOKEN DE INTENÇÃO
+	# -----------------------------------------------------------------
+	if intent == "start_music_mode":
+		# CORREÇÃO DE SEGURANÇA: Limpa completamente o stream procedural de beeps 
+		# para dar liberdade total ao player carregar as faixas reais .wav sem conflitos
+		if is_instance_valid(voice_player):
+			voice_player.stop()
+			voice_player.stream = null 
+		
+		# Força a visibilidade imediata para garantir que o contêiner receba os comandos
+		music_player_panel.visible = true
+		
+		# Executa a sua rotina nativa de animação por Tween que você criou
+		_toggle_music_panel(true)
+		
+		# Dispara a reprodução real da faixa de música (.wav)
+		_play_track(current_track_index)
+			
+	elif intent == "exit_music_mode":
+		_toggle_music_panel(false)
+		is_playing_music = false
+		if is_instance_valid(voice_player):
+			voice_player.stop()
+			
+	# Só executa o reset automático de animação se o jogador NÃO estiver no modo música.
+	if intent != "start_music_mode" and cosmo_brain.memory_data["conversation_context"]["current_game_mode"] != "music":
+		_reset_to_current_mood_animation()
+		
 	input_field.editable = true
 	input_field.grab_focus()
 
 # =====================================================
-# VISUAL REACTION & TIMING (Com efeito Typewriter)
+# VISUAL REACTION & TIMING (Com efeito Typewriter e TTS)
 # =====================================================
 func execute_cosmo_reaction(speech_text: String, anim_name: String) -> void:
 	# 1. PROCESSAMENTO DE TAGS: Varre e identifica se existem humores na string
 	var thinking_index: int = speech_text.find("[mood:thinking]")
 	var smug_index: int = speech_text.find("[mood:smug]")
 	
-	# Controladores booleanos estáveis para a máquina de visual do typewriter
+	# Controladores booleanos estáveis para a máquina visual do typewriter
 	var is_thinking: bool = (thinking_index != -1)
 	var is_smug: bool = false
 	
@@ -116,7 +164,7 @@ func execute_cosmo_reaction(speech_text: String, anim_name: String) -> void:
 	if thinking_index != -1:
 		speech_text = speech_text.replace("[mood:thinking]", "")
 		if smug_index != -1 and smug_index > thinking_index:
-			smug_index -= 15
+			smug_index -= 15 # Compensa os 15 caracteres removidos da primeira tag
 			
 	if smug_index != -1:
 		speech_text = speech_text.replace("[mood:smug]", "")
@@ -125,16 +173,16 @@ func execute_cosmo_reaction(speech_text: String, anim_name: String) -> void:
 	dialogue_label.text = speech_text
 	dialogue_label.visible_ratio = 0.0
 	
-	# 🔥 REPARADO: Garante que o sintetizador crie os dados senoidais da onda de áudio 
-	# ANTES do loop de caracteres começar, evitando que o stream fique vazio.
+	# Garante a integridade física do nó de som original do projeto para os outros modos (Música)
 	_setup_procedural_voice()
 	
 	# Define a velocidade e a animação do começo da frase
 	var current_anim: String = anim_name
+	var base_pitch_tts: float = 1.0 # Padrão do TTS do DisplayServer (0.0 a 2.0)
+	
 	if is_thinking:
 		current_anim = "thinking"
-		if is_instance_valid(voice_player):
-			voice_player.pitch_scale = 0.85 # Tom calculista e grave inicial
+		base_pitch_tts = 0.85 # Tom de voz levemente mais sóbrio e focado para a lore
 			
 	if animation_sprite.sprite_frames.has_animation(current_anim):
 		animation_sprite.play(current_anim)
@@ -143,24 +191,33 @@ func execute_cosmo_reaction(speech_text: String, anim_name: String) -> void:
 		
 	print("Cosmo diz: ", speech_text)
 	
+	# DISPARO DO TTS NATIVO: Fala o bloco INTEIRO linearmente sem interrupções
+	if not _cosmo_voice_id.is_empty():
+		DisplayServer.tts_stop() # Limpa buffers anteriores de segurança
+		# Deixamos o Windows ditar a história toda de forma fluida e sem cortes mecânicos
+		DisplayServer.tts_speak(speech_text, _cosmo_voice_id, 100, 1.15, 1.7)
+
+	
 	var total_chars = speech_text.length()
 	var current_visible = 0
 	
 	# 2. LOOP DE TYPEWRITER COM EVENTOS EM TEMPO REAL
 	while current_visible < total_chars:
-		# EVENTO VISUAL: O cursor atingiu o ponto exato da transição sarcástica?
+		# EVENTO VISUAL SINCRONIZADO: O cursor de letras atingiu a reviravolta sarcástica?
 		if smug_index != -1 and current_visible == smug_index:
 			is_thinking = false
 			is_smug = true
 			
+			# Chaveia visualmente o rosto para smug imediatamente na tela
 			if animation_sprite.sprite_frames.has_animation("smug"):
 				animation_sprite.play("smug")
 				
-			if is_instance_valid(voice_player):
-				voice_player.pitch_scale = 1.3 # Eleva o pitch para o tom debochado
-				
-			await get_tree().create_timer(0.4).timeout # Pausa dramática mecânica
-			smug_index = -1 # Consome o evento para rodar apenas uma vez
+			# REPARADO: Removemos o tts_stop() e o segundo tts_speak daqui de dentro!
+			# A voz Maria continuará lendo a história organicamente até o fim sem ser cortada,
+			# enquanto o rosto muda para o deboche visual de forma teatral e sincronizada.
+			
+			await get_tree().create_timer(0.3).timeout # Pequena pausa dramática na digitação
+			smug_index = -1 # Consome o gatilho único
 			
 		current_visible += 1
 		dialogue_label.visible_ratio = float(current_visible) / float(total_chars)
@@ -170,22 +227,19 @@ func execute_cosmo_reaction(speech_text: String, anim_name: String) -> void:
 			break
 			
 		var current_char = speech_text[char_index]
-		var delay = 0.045 # Cadência estável e confortável
+		var delay = 0.045 # Velocidade estável calibrada para leitura confortável
 		
 		if current_char == "," or current_char == ";":
-			delay = 0.30
+			delay = 0.25
 		elif current_char == "." or current_char == "!" or current_char == "?":
-			delay = 0.65
+			delay = 0.55
 			
 		if current_char != " " and current_char != "\t" and not current_char in [".", ",", "!", "?", ";"]:
-			# ASSEGURA O SPRITE CORRETO: Força o frame no lugar antes de disparar o áudio
+			# Sustenta ativamente as expressões na tela impedindo glitches nativos
 			if is_thinking and animation_sprite.animation != "thinking":
 				animation_sprite.play("thinking")
 			elif is_smug and animation_sprite.animation != "smug":
 				animation_sprite.play("smug")
-				
-			# Roda a sua função de áudio sincronizada de forma estável
-			_play_voice_beep_safe()
 			
 		await get_tree().create_timer(delay).timeout
 		
@@ -193,13 +247,10 @@ func execute_cosmo_reaction(speech_text: String, anim_name: String) -> void:
 	if animation_sprite.sprite_frames.has_animation("listening_animation"):
 		animation_sprite.play("listening_animation")
 		
-	# Devolve o pitch base original ao canal através da sua configuração procedural de humor
+	# Reseta as configurações procedimentais do buffer para dar prioridade ao player de música
 	_setup_procedural_voice()
-	
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(1.5).timeout
 
-
-# REPARADO: Aponta diretamente para a sua variável instanciada 'voice_player'
 # Isso garante que a onda senoidal gerada em '_setup_procedural_voice' seja tocada perfeitamente
 func _play_voice_beep_safe() -> void:
 	if is_instance_valid(voice_player):
@@ -334,12 +385,10 @@ func _play_track(index: int) -> void:
 		var clean_name = track_path.get_file().replace(".wav", "").capitalize()
 		current_track_label.text = clean_name
 		
-		# Cosmo comenta de forma síncrona no painel de conversa
-		dialogue_label.visible_ratio = 0.0
-		dialogue_label.text = "Iniciando reprodução de: %s" % clean_name
-		create_tween().tween_property(dialogue_label, "visible_ratio", 1.0, 0.5)
+		# REPARADO: Removemos o Tween bruto que resetava a dialogue_label de forma agressiva.
+		# Se o jogador acabou de pedir a música, mantemos a fala satírica do Cosmo na tela.
+		# Atualizamos apenas o status da faixa no terminal de logs.
 		print("[Music Player] Tocando arquivo real: ", clean_name)
-
 
 func _on_play_pressed() -> void:
 	# Se a música estava pausada no meio, apenas retoma sem recarregar do zero
