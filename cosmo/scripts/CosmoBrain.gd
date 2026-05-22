@@ -195,9 +195,7 @@ func process_player_input(player_text: String) -> Dictionary:
 		"text": response,
 		"animation": suggested_animation,
 		"intent": intent
-	}
-
-
+	} #Corrigindo player que parou de carregar ao passar o "intent" no retorno da função
 
 # =====================================================
 # INTENT DETECTION
@@ -598,9 +596,6 @@ func generate_procedural_story() -> String:
 	var full_story: String = "[mood:thinking]" + intro + tech + twist + " [mood:smug]" + conclusion
 	
 	return apply_context(full_story)
-
-
-
 
 func _get_unique_chunk(category: String) -> String:
 	# Segurança: caso o JSON falhe ou não tenha a chave, evita crash do jogo
