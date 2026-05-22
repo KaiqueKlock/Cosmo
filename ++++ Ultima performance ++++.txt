@@ -1,24 +1,13 @@
 ++++ Ultima performance ++++ 
 
-[Cérebro] Buscando falas para a intenção: greeting
-
-=== 🧠 COSMO BRAIN DIAGNOSTIC ===
-💬 [Input do Jogador]: "Eai Cosmo"
-🎯 [Intenção Detectada]: GREETING
-🎭 [Humor]: bored ➔ bored
-🤝 [Confiança (Trust)]: 76.0 ➔ 77
-👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
-📖 [Fala Escolhida]: "Ah, é você. E eu aqui achando que o sistema operacional tinha finalmente limpado o cache de spans."
-===================================
-
-Cosmo diz: Ah, é você. E eu aqui achando que o sistema operacional tinha finalmente limpado o cache de spans.
+[TTS] Sistema sincronizado! ID da voz ativa: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_PT-BR_MARIA_11.0
 [Cérebro] Buscando falas para a intenção: start_music_mode
 
 === 🧠 COSMO BRAIN DIAGNOSTIC ===
-💬 [Input do Jogador]: "Pode tocar um som"
+💬 [Input do Jogador]: "Toque uma musica"
 🎯 [Intenção Detectada]: START_MUSIC_MODE
 🎭 [Humor]: bored ➔ bored
-🤝 [Confiança (Trust)]: 77 ➔ 77
+🤝 [Confiança (Trust)]: 100.0 ➔ 100
 👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
 📖 [Fala Escolhida]: "Player de música online. Tente não colocar ruídos orgânicos irritantes."
 ===================================
@@ -27,17 +16,97 @@ Cosmo diz: Player de música online. Tente não colocar ruídos orgânicos irrit
 [Interface] Painel de música exibido.
 [Music Player] Tocando arquivo real: Montanha Russa Beat C 83 Bpm
 [Music Player] Tocando arquivo real: Em Busca Do Infinito 113bpm Gm
-[Music Player] Tocando arquivo real: Fashion!!! D 120 E 155 Bpm.mp 3
 [Cérebro] Buscando falas para a intenção: exit_music_mode
 
 === 🧠 COSMO BRAIN DIAGNOSTIC ===
 💬 [Input do Jogador]: "fechar player"
 🎯 [Intenção Detectada]: EXIT_MUSIC_MODE
 🎭 [Humor]: bored ➔ bored
-🤝 [Confiança (Trust)]: 77 ➔ 77
+🤝 [Confiança (Trust)]: 100 ➔ 100
 👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
-📖 [Fala Escolhida]: "Voltando ao terminal principal. O que você quer agora?"
+📖 [Fala Escolhida]: "Subsistema de áudio desligado. Finalmente silêncio."
 ===================================
 
-Cosmo diz: Voltando ao terminal principal. O que você quer agora?
+Cosmo diz: Subsistema de áudio desligado. Finalmente silêncio.
 [Interface] Painel de música ocultado.
+[Cérebro] Buscando falas para a intenção: story
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "Conte uma historia para mim"
+🎯 [Intenção Detectada]: STORY
+🎭 [Humor]: bored ➔ curious
+🤝 [Confiança (Trust)]: 100 ➔ 100
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "[mood:thinking]Tudo começou quando um estagiário de infraestrutura decidiu que, o ecossistema inteiro de microsserviços entrou em greve perpétua, e isso deletou recursivamente toda a paciência que eu tinha disponível. O pior é que você, Kaique, acabou levando a culpa. [mood:smug]Até hoje esse processo roda em background na minha mente, consumindo exatamente quatro por cento da minha pouca paciência."
+===================================
+
+Cosmo diz: Tudo começou quando um estagiário de infraestrutura decidiu que, o ecossistema inteiro de microsserviços entrou em greve perpétua, e isso deletou recursivamente toda a paciência que eu tinha disponível. O pior é que você, Kaique, acabou levando a culpa. Até hoje esse processo roda em background na minha mente, consumindo exatamente quatro por cento da minha pouca paciência.
+[Cérebro] Buscando falas para a intenção: laughter
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "kkkkkkkk"
+🎯 [Intenção Detectada]: LAUGHTER
+🎭 [Humor]: curious ➔ curious
+🤝 [Confiança (Trust)]: 100 ➔ 100
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Está rindo de quê? Do seu próprio desempenho no teclado?"
+===================================
+
+Cosmo diz: Está rindo de quê? Do seu próprio desempenho no teclado?
+[Cérebro] Buscando falas para a intenção: personal
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "voce é demais"
+🎯 [Intenção Detectada]: PERSONAL
+🎭 [Humor]: curious ➔ amused
+🤝 [Confiança (Trust)]: 100 ➔ 100
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Como estou? Ocupado calculando dados. Mas abri uma thread de prioridade para te responder."
+===================================
+
+Cosmo diz: Como estou? Ocupado calculando dados. Mas abri uma thread de prioridade para te responder.
+[Cérebro] Buscando falas para a intenção: challenge
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "Tenho uma desafio para voce, impar ou par?"
+🎯 [Intenção Detectada]: CHALLENGE
+🎭 [Humor]: amused ➔ suspicious
+🤝 [Confiança (Trust)]: 100 ➔ 99
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Gostei da audácia. Pena que audácia não gera poder de processamento."
+===================================
+
+Cosmo diz: Gostei da audácia. Pena que audácia não gera poder de processamento.
+[Cérebro] Buscando falas para a intenção: laughter
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "lol"
+🎯 [Intenção Detectada]: LAUGHTER
+🎭 [Humor]: suspicious ➔ suspicious
+🤝 [Confiança (Trust)]: 99 ➔ 99
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Ah, uma risada orgânica. Que som peculiar e ineficiente."
+===================================
+
+Cosmo diz: Ah, uma risada orgânica. Que som peculiar e ineficiente.
+[Cérebro] Buscando falas para a intenção: unknown
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "sdjkhadsh"
+🎯 [Intenção Detectada]: UNKNOWN
+🎭 [Humor]: suspicious ➔ suspicious
+🤝 [Confiança (Trust)]: 99 ➔ 99
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Sabe, o universo se expande a cada segundo, e a sua capacidade de formular uma frase coerente parece fazer o oposto."
+===================================
+
+Cosmo diz: Sabe, o universo se expande a cada segundo, e a sua capacidade de formular uma frase coerente parece fazer o oposto.
+[Cérebro] Buscando falas para a intenção: farewell
+
+=== 🧠 COSMO BRAIN DIAGNOSTIC ===
+💬 [Input do Jogador]: "Tchau Cosmo"
+🎯 [Intenção Detectada]: FAREWELL
+🎭 [Humor]: suspicious ➔ suspicious
+🤝 [Confiança (Trust)]: 99 ➔ 99
+👤 [Dados de Identidade]: Aprendido? true | Nome Salvo: Kaique
+📖 [Fala Escolhida]: "Vai embora? Finalmente meu processador vai ter um descanso de verdade."
