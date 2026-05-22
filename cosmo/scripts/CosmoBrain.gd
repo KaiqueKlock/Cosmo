@@ -25,6 +25,7 @@ var mood_manager: MoodManager
 # =====================================================
 # DATA
 # =====================================================
+var storyteller_data: Dictionary = {}
 
 var personality_data: Dictionary = {}
 
@@ -54,6 +55,7 @@ func _ready():
 # =====================================================
 
 func load_all_data() -> void:
+	storyteller_data = _load_json("res://cosmo/data/storyteller.json")
 
 	personality_data = _load_json(
 		"res://cosmo/data/personality.json"
@@ -69,6 +71,7 @@ func load_all_data() -> void:
 	else:
 		memory_data = _load_json("res://cosmo/data/memory.json")
 
+	
 
 func _load_json(path: String) -> Dictionary:
 
@@ -251,18 +254,32 @@ func detect_intent(text: String) -> String:
 			if current_mode != "music":
 				memory_data["conversation_context"]["current_game_mode"] = "music"
 				return "start_music_mode"
+				
+	# -----------------------------------------------------------------
+	# REGRAS DO MODO Histórias
+	# -----------------------------------------------------------------
 
+		# -----------------------------------------------------------------
+	# DETECÇÃO DE INTENÇÕES (DENTRO DE DETECT_INTENT)
+	# -----------------------------------------------------------------
+		# STORY_CONTINUE: Detecção direta de sequência narrativa
+	var continue_tokens = ["depois", "continua", "o que aconteceu", "entao", "então", "e depois"]
+	for token in continue_tokens:
+		if token in words: 
+			return "story" # Redireciona direto para gerar outra lore combinatória
 
-
+			
 	# STORY: Pedidos de histórias
 	var story_tokens = ["história", "historia", "story", "conto", "contar", "conte"]
 	for token in story_tokens:
-		if token in words: return "story"
+		if token in words: 
+			return "story"
 
 	# CHALLENGE: Desafios e disputas
 	var challenge_tokens = ["desafio", "challenge", "competir", "duelo", "jogar", "jogo"]
 	for token in challenge_tokens:
-		if token in words: return "challenge"
+		if token in words: 
+			return "challenge"
 
 	# PERSONAL: Estado, identidade, elogios profundos e concordâncias com o Cosmo
 	var personal_tokens = ["você", "voce", "you", "seu", "sua", "te", "contigo", "ti"]
@@ -280,7 +297,7 @@ func detect_intent(text: String) -> String:
 				if qualifier in words or qualifier in clean_text:
 					return "personal"
 
-# FAREWELL: Despedidas (Mudado para varredura na string limpa completa)
+	# FAREWELL: Despedidas (Varredura na string limpa completa)
 	var farewell_tokens = ["tchau", "adeus", "bye", "fui", "saindo", "falou", "falo"]
 	for token in farewell_tokens:
 		if token in clean_text: 
@@ -293,6 +310,7 @@ func detect_intent(text: String) -> String:
 			return "greeting"
 
 	return "unknown"
+
 
 # =====================================================
 # MEMORY
@@ -413,6 +431,16 @@ func update_relationship(intent: String) -> void:
 func build_response(intent: String) -> String:
 	print("[Cérebro] Buscando falas para a intenção: ", intent)
 
+	# =====================================================
+	# 🔥 NOVO: DESVIO PROCEDURAL PARA MODO HISTÓRIA
+	# =====================================================
+	if intent == "story":
+		var procedural_story = generate_procedural_story()
+		# Alimenta o histórico de conversas da memória com a história gerada
+		memory_data["conversation_context"]["last_response_used"] = procedural_story
+		return procedural_story
+
+	# Verificação padrão do JSON de personalidade (executada para as outras intenções)
 	if not personality_data.has("intents") or not personality_data["intents"].has(intent):
 		print("[Erro Cérebro] Intenção não encontrada no JSON de personalidade. Caindo no fallback.")
 		return "Interessante..."
@@ -449,6 +477,7 @@ func build_response(intent: String) -> String:
 	if filtered_lines.is_empty():
 		filtered_lines = lines
 
+	# Uso do seu gerador de números do projeto (rng) para manter a consistência de seeds
 	var chosen_line = filtered_lines[rng.randi_range(0, filtered_lines.size() - 1)]
 	chosen_line = apply_context(chosen_line)
 	memory_data["conversation_context"]["last_response_used"] = chosen_line
@@ -554,3 +583,66 @@ func extract_and_save_name(player_text: String) -> void:
 		identity["name"] = name_found
 		identity["name_learned"] = true
 		print("[Cérebro] Identidade atualizada! Nome do jogador salvo como: ", name_found)
+		
+
+# =================================================================
+#  FUNÇÕES PROCESSUAIS DO GERADOR DE HISTÓRIAS (FINAL DO ARQUIVO)
+# =================================================================
+
+func generate_procedural_story() -> String:
+	# REMOVIDO: A chamada ao MoodManager foi retirada para evitar o erro de função inexistente.
+	# O seu pipeline original já atualiza o humor automaticamente no 'process_player_input'.
+	
+	var intro: String = _get_unique_chunk("intro")
+	var tech: String = _get_unique_chunk("tech_context")
+	var twist: String = _get_unique_chunk("twist_bug")
+	var conclusion: String = _get_unique_chunk("conclusion")
+	
+	# Injetamos as tags visuais. O Main.gd lerá e trocará as animações da face do Cosmo.
+	var full_story: String = "[mood:thinking]" + intro + tech + twist + " [mood:smug]" + conclusion
+	
+	return apply_context(full_story)
+
+
+
+
+func _get_unique_chunk(category: String) -> String:
+	# Segurança: caso o JSON falhe ou não tenha a chave, evita crash do jogo
+	if not storyteller_data or not storyteller_data.has(category):
+		print("[Erro Cérebro] Categoria '", category, "' não encontrada no storyteller_data.")
+		return " [Erro de Dados] "
+		
+	# Injeta dinamicamente a estrutura de histórico dentro da memória da sessão
+	if not memory_data.has("story_history_cache"):
+		memory_data["story_history_cache"] = {
+			"intro": [],
+			"tech_context": [],
+			"twist_bug": [],
+			"conclusion": []
+		}
+		
+	var local_history: Dictionary = memory_data["story_history_cache"]
+	var local_max_history: int = 2
+		
+	var pool: Array = storyteller_data[category]
+	var valid_indices: Array = []
+	
+	# Varre o pool filtrando pelo histórico salvo na memória
+	for i in range(pool.size()):
+		if not local_history[category].has(i):
+			valid_indices.append(i)
+			
+	# Fallback caso trave o histórico (limpa a categoria)
+	if valid_indices.is_empty():
+		local_history[category].clear()
+		for i in range(pool.size()):
+			valid_indices.append(i)
+			
+	# Sorteia e atualiza a fila de anti-repetição
+	var chosen_index: int = valid_indices[randi() % valid_indices.size()]
+	local_history[category].append(chosen_index)
+	
+	if local_history[category].size() > local_max_history:
+		local_history[category].pop_front()
+		
+	return pool[chosen_index]

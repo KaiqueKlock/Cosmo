@@ -24,6 +24,9 @@ extends Control
 @onready var bg_music_player: AudioStreamPlayer = $BackgroundMusicPlayer
 @onready var current_track_label: Label = %CurrentTrackLabel
 
+# Trava de segurança para impedir que a voz mude o sprite durante animações especiais
+var _lock_talking_animation: bool = false
+
 # Simulação da Playlist interna do Cosmo
 var playlist: Array[String] = [
 	"res://cosmo/playlist/Montanha Russa Beat C 83 BPM.wav",
@@ -101,62 +104,121 @@ func _on_input_field_text_submitted(_text: String) -> void:
 # VISUAL REACTION & TIMING (Com efeito Typewriter)
 # =====================================================
 func execute_cosmo_reaction(speech_text: String, anim_name: String) -> void:
+	# 1. PROCESSAMENTO DE TAGS: Varre e identifica se existem humores na string
+	var thinking_index: int = speech_text.find("[mood:thinking]")
+	var smug_index: int = speech_text.find("[mood:smug]")
+	
+	# Controladores booleanos estáveis para a máquina de visual do typewriter
+	var is_thinking: bool = (thinking_index != -1)
+	var is_smug: bool = false
+	
+	# Limpa os metadados textuais da string para não vazar na tela do terminal
+	if thinking_index != -1:
+		speech_text = speech_text.replace("[mood:thinking]", "")
+		if smug_index != -1 and smug_index > thinking_index:
+			smug_index -= 15
+			
+	if smug_index != -1:
+		speech_text = speech_text.replace("[mood:smug]", "")
+		
+	# Configura a interface com o texto limpo
 	dialogue_label.text = speech_text
 	dialogue_label.visible_ratio = 0.0
-	print("Cosmo diz: ", speech_text)
 	
-	if animation_sprite.sprite_frames.has_animation(anim_name):
-		animation_sprite.play(anim_name)
+	# 🔥 REPARADO: Garante que o sintetizador crie os dados senoidais da onda de áudio 
+	# ANTES do loop de caracteres começar, evitando que o stream fique vazio.
+	_setup_procedural_voice()
+	
+	# Define a velocidade e a animação do começo da frase
+	var current_anim: String = anim_name
+	if is_thinking:
+		current_anim = "thinking"
+		if is_instance_valid(voice_player):
+			voice_player.pitch_scale = 0.85 # Tom calculista e grave inicial
+			
+	if animation_sprite.sprite_frames.has_animation(current_anim):
+		animation_sprite.play(current_anim)
 	elif animation_sprite.sprite_frames.has_animation("talking_animation"):
 		animation_sprite.play("talking_animation")
 		
-	_setup_procedural_voice()
+	print("Cosmo diz: ", speech_text)
 	
 	var total_chars = speech_text.length()
 	var current_visible = 0
 	
-	# Usamos um controle manual de tempo em vez do Tween linear puro, 
-	# assim conseguimos pausar o tempo nas pontuações!
+	# 2. LOOP DE TYPEWRITER COM EVENTOS EM TEMPO REAL
 	while current_visible < total_chars:
+		# EVENTO VISUAL: O cursor atingiu o ponto exato da transição sarcástica?
+		if smug_index != -1 and current_visible == smug_index:
+			is_thinking = false
+			is_smug = true
+			
+			if animation_sprite.sprite_frames.has_animation("smug"):
+				animation_sprite.play("smug")
+				
+			if is_instance_valid(voice_player):
+				voice_player.pitch_scale = 1.3 # Eleva o pitch para o tom debochado
+				
+			await get_tree().create_timer(0.4).timeout # Pausa dramática mecânica
+			smug_index = -1 # Consome o evento para rodar apenas uma vez
+			
 		current_visible += 1
 		dialogue_label.visible_ratio = float(current_visible) / float(total_chars)
 		
-		# Pega o caractere atual que acabou de aparecer
-		var current_char = speech_text[current_visible - 1]
-		
-		# Base de tempo padrão por caractere (0.03s)
-		var delay = 0.03
-		
-		# Injeta pausas dinâmicas conforme a pontuação gramatical
-		if current_char == "," or current_char == ";":
-			delay = 0.25 # Pausa curta para respirar na frase
-		elif current_char == "." or current_char == "!" or current_char == "?":
-			delay = 0.5 # Pausa longa em fins de frase
+		var char_index = current_visible - 1
+		if char_index >= total_chars:
+			break
 			
-		# Se não for espaço ou pontuação pura, toca o som procedimental
+		var current_char = speech_text[char_index]
+		var delay = 0.045 # Cadência estável e confortável
+		
+		if current_char == "," or current_char == ";":
+			delay = 0.30
+		elif current_char == "." or current_char == "!" or current_char == "?":
+			delay = 0.65
+			
 		if current_char != " " and current_char != "\t" and not current_char in [".", ",", "!", "?", ";"]:
+			# ASSEGURA O SPRITE CORRETO: Força o frame no lugar antes de disparar o áudio
+			if is_thinking and animation_sprite.animation != "thinking":
+				animation_sprite.play("thinking")
+			elif is_smug and animation_sprite.animation != "smug":
+				animation_sprite.play("smug")
+				
+			# Roda a sua função de áudio sincronizada de forma estável
 			_play_voice_beep_safe()
 			
-		# Aguarda o tempo calculado antes de avançar para o próximo caractere
 		await get_tree().create_timer(delay).timeout
 		
-	if animation_sprite.animation == "talking_animation" and animation_sprite.sprite_frames.has_animation("listening_animation"):
+	# 3. MÁQUINA DE ESTADO FINAL: Retorna para o modo de escuta ativa
+	if animation_sprite.sprite_frames.has_animation("listening_animation"):
 		animation_sprite.play("listening_animation")
+		
+	# Devolve o pitch base original ao canal através da sua configuração procedural de humor
+	_setup_procedural_voice()
 	
-	# Tempo extra de leitura estático no final da frase
 	await get_tree().create_timer(2.0).timeout
 
 
-# Nova função auxiliar de áudio sem await interno para evitar deadlock de thread
+# REPARADO: Aponta diretamente para a sua variável instanciada 'voice_player'
+# Isso garante que a onda senoidal gerada em '_setup_procedural_voice' seja tocada perfeitamente
 func _play_voice_beep_safe() -> void:
 	if is_instance_valid(voice_player):
-		# Modulação sutil de pitch rápida e sem travar o processo
-		voice_player.pitch_scale += randf_range(-0.05, 0.05)
+		var base_pitch: float = voice_player.pitch_scale
+		
+		# Aplica a microvariação estrita de sintetizador apenas no disparo de áudio atual
+		voice_player.pitch_scale = base_pitch + randf_range(-0.04, 0.04)
 		voice_player.play()
-
+		
+		# Restaura imediatamente o valor base para o próximo caractere
+		voice_player.pitch_scale = base_pitch
+	else:
+		print("[Erro Cérebro Main] Objeto 'voice_player' não possui instância válida carregada!")
 
 
 func _setup_procedural_voice() -> void:
+	if not is_instance_valid(voice_player):
+		return
+		
 	# CORRIGIDO: Alterado de AudioStreamWav para AudioStreamWAV
 	if voice_player.stream == null or not (voice_player.stream is AudioStreamWAV):
 		var sample_rate = 44100.0
@@ -212,6 +274,7 @@ func _play_voice_beep() -> void:
 		# Restaura o pitch base após tocar
 		await voice_player.finished
 		voice_player.pitch_scale = original_pitch
+
 
 func _reset_to_current_mood_animation() -> void:
 	# Verifica o humor atual do MoodManager e puxa a animação correspondente
