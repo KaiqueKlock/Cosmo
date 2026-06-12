@@ -266,23 +266,11 @@ res://cosmo/data/storyteller.json
 
 A montagem linear segue a expressão matemática de probabilidade combinatória:
 
-```math
-\text{Variedade Total} =
-\prod |C_i|
-=
-|Intro|
-\times
-|TechContext|
-\times
-|TwistBug|
-\times
-|Conclusion|
-```
+Variedade Total = ∏ |C_i| = |Intro| × |TechContext| × |TwistBug| × |Conclusion|
 
-Com a expansão estrutural da base de dados para **7 fragmentos únicos por categoria**, o sistema computa uma matriz com:
+Com a expansão estrutural da base de dados para 12 fragmentos únicos por categoria, o sistema computa uma matriz com:
 
-# 🎲 2.401 variações narrativas exclusivas
-
+# 🎲 20.736 variações narrativas exclusivas
 Escalável em runtime sem exigir nenhuma alteração lógica de código nos scripts da Godot Engine.
 
 ---
