@@ -352,11 +352,11 @@ Comparações baseadas em varredura textual na camada de UI são explicitamente 
 # 🧩 Roadmap Futuro
 
 - [ ] Emotion Graph Runtime
-- [ ] Long-Term Semantic Memory
-- [ ] Procedural Relationship Evolution
+- [OK] Long-Term Semantic Memory
+- [OK] Procedural Relationship Evolution
 - [ ] Dynamic Animation Blending
-- [ ] AI Mood Decay Curves
-- [ ] Advanced Lore Persistence
+- [OK] AI Mood Decay Curves
+- [OK] Advanced Lore Persistence
 - [ ] Runtime Personality Mutation
 - [ ] Modular Intent Packs
 - [ ] Voice Emotion Simulation
